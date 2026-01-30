@@ -3,32 +3,39 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Sign in — Lustra</title>
+    <title>Sign in — Lustra (Midnight)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-    <style>body{font-family:'Poppins',system-ui,Arial,sans-serif}.spinner{border:3px solid rgba(255,255,255,0.08);border-top-color:white;border-radius:50%;width:18px;height:18px;animation:spin .8s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}</style>
+    <style>
+      :root{--mp-700:#2b0b3b;--mp-500:#7c3aed}
+      body{background:linear-gradient(180deg,#050014 0%,#09021b 100%);font-family:'Poppins',system-ui,Arial;}
+      .glass{background:rgba(255,255,255,0.03);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.03)}
+      .field{position:relative}
+      .field input{background:transparent}
+      .field label{position:absolute;left:12px;top:12px;transform-origin:left top;transition:transform .15s,top .15s,font-size .15s;color:rgba(230,230,255,0.6);pointer-events:none}
+      .field input:focus + label, .field input:not(:placeholder-shown) + label{transform:translateY(-10px) scale(.85);top:6px;font-size:.78rem;color:var(--mp-500)}
+      .spinner{border:3px solid rgba(255,255,255,0.08);border-top-color:white;border-radius:50%;width:18px;height:18px;animation:spin .8s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
+    </style>
   </head>
-  <body class="min-h-screen bg-gradient-to-b from-slate-900 to-black flex items-center justify-center p-6">
-    <div class="w-full max-w-md bg-slate-900/60 border border-slate-800 rounded-2xl p-8 shadow-xl">
-      <h1 class="text-2xl font-bold mb-1">Welcome back</h1>
-      <p class="text-sm text-slate-400 mb-6">Sign in to your Lustra account</p>
+  <body class="min-h-screen flex items-center justify-center p-6 text-slate-100">
+    <div class="w-full max-w-md glass rounded-2xl p-8 shadow-xl">
+      <h1 class="text-2xl font-bold mb-1">Sign in to Lustra</h1>
+      <p class="text-sm text-slate-300 mb-6">Welcome back — enter your details below.</p>
 
       <form id="login-form" class="space-y-4" novalidate>
-        <div>
-          <label class="text-sm text-slate-300">Email</label>
-          <input id="email" type="email" required class="w-full mt-1 px-3 py-2 bg-slate-800 border border-slate-700 rounded-md text-slate-100 focus:outline-none" />
+        <div class="field">
+          <input id="email" type="email" placeholder=" " required class="w-full mt-1 px-3 py-3 border border-slate-700 rounded-md text-slate-100 focus:outline-none" />
+          <label for="email">Email</label>
         </div>
 
-        <div>
-          <label class="text-sm text-slate-300 flex justify-between items-center">
-            <span>Password</span>
-            <button id="toggle-password" type="button" class="text-xs text-slate-400">Show</button>
-          </label>
-          <input id="password" type="password" required class="w-full mt-1 px-3 py-2 bg-slate-800 border border-slate-700 rounded-md text-slate-100 focus:outline-none" />
+        <div class="field">
+          <input id="password" type="password" placeholder=" " required class="w-full mt-1 px-3 py-3 border border-slate-700 rounded-md text-slate-100 focus:outline-none" />
+          <label for="password">Password</label>
+          <button id="toggle-password" type="button" class="absolute right-3 top-3 text-xs text-slate-400">Show</button>
         </div>
 
         <div class="flex items-center justify-between">
-          <button id="submit-btn" type="submit" class="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-indigo-500 to-pink-400 text-white font-semibold rounded-md">
+          <button id="submit-btn" type="submit" class="flex items-center gap-3 px-4 py-2 bg-gradient-to-r from-[#2b0b3b] to-[#7c3aed] text-white font-semibold rounded-md">
             <span id="submit-text">Sign in</span>
             <svg id="submit-spinner" class="hidden spinner" viewBox="0 0 24 24"></svg>
           </button>
@@ -39,14 +46,15 @@
       </form>
     </div>
 
+    <div id="toast" class="fixed right-6 bottom-6 hidden"><div class="bg-slate-800 text-white px-4 py-2 rounded shadow">Message</div></div>
+
     <script src="auth.js"></script>
     <script>
-      // UI helpers
-      const toggleBtn = document.getElementById('toggle-password');
-      const pwField = document.getElementById('password');
-      toggleBtn?.addEventListener('click', () => {
-        if (pwField.type === 'password') { pwField.type = 'text'; toggleBtn.textContent = 'Hide'; }
-        else { pwField.type = 'password'; toggleBtn.textContent = 'Show'; }
+      const pw = document.getElementById('password');
+      const tp = document.getElementById('toggle-password');
+      tp?.addEventListener('click', () => {
+        if (pw.type === 'password') { pw.type = 'text'; tp.textContent = 'Hide'; }
+        else { pw.type = 'password'; tp.textContent = 'Show'; }
       });
 
       authOnStateChanged(user => { if (user) location.href = 'index.html'; });
@@ -56,16 +64,12 @@
         clearMessage('login-error');
         const email = document.getElementById('email').value.trim();
         const password = document.getElementById('password').value;
-        const submitText = document.getElementById('submit-text');
-        const spinner = document.getElementById('submit-spinner');
-
-        // simple validation
         if (!email || !password) return showMessage('login-error', 'Email and password are required.');
 
-        // show loading
+        const submitText = document.getElementById('submit-text');
+        const spinner = document.getElementById('submit-spinner');
         submitText.classList.add('opacity-40');
         spinner.classList.remove('hidden');
-
         try {
           await authSignIn(email, password);
         } catch (err) {
@@ -75,6 +79,14 @@
           spinner.classList.add('hidden');
         }
       });
+
+      // local toast fallback used by auth.js
+      function toast(msg, ms=3000){
+        const t = document.getElementById('toast');
+        t.querySelector('div').textContent = msg;
+        t.classList.remove('hidden');
+        setTimeout(()=>t.classList.add('hidden'), ms);
+      }
     </script>
   </body>
 </html>
