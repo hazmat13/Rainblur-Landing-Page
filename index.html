@@ -3,127 +3,92 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Lustra — Midnight Edition</title>
-    <meta name="description" content="Lustra — Midnight Purple theme, reactive UI" />
+    <title>Lustra — Midnight (Polished UI)</title>
+    <meta name="description" content="Lustra — Midnight purple theme, reactive UI, polished UX." />
 
-    <!-- Tailwind CDN -->
+    <!-- Tailwind CDN for rapid UI with small size -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet"/>
 
     <style>
       :root{
-        /* Midnight Purple palette */
-        --mp-900: #0b0326; /* page background very dark */
-        --mp-800: #13062f;
+        --bg-900: #060012;
+        --bg-800: #0b0326;
         --mp-700: #2b0b3b;
-        --mp-600: #4c1d8f; /* vivid purple */
-        --mp-500: #7c3aed; /* bright purple */
-        --mp-400: #b794f4; /* light accent */
+        --mp-600: #4c1d8f;
+        --mp-500: #7c3aed;
+        --mp-400: #b794f4;
         --glass: rgba(255,255,255,0.04);
+        --muted: #a8a0d9;
       }
 
       html,body{height:100%}
       body{
         font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-        background: linear-gradient(180deg, var(--mp-900) 0%, #060012 60%);
-        color: #e6e6ff;
-        -webkit-font-smoothing:antialiased;
-        -moz-osx-font-smoothing:grayscale;
-        overflow-y:scroll;
+        background: radial-gradient(800px 400px at 10% 10%, rgba(124,58,237,0.06), transparent),
+                    radial-gradient(500px 300px at 90% 90%, rgba(124,58,237,0.05), transparent),
+                    linear-gradient(180deg,var(--bg-900), #03000a);
+        color: #e9e7ff;
+        -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
       }
 
-      /* animated gradient backdrop */
-      .midnight-bg {
-        position: absolute;
-        inset: 0;
-        z-index: -1;
-        background: radial-gradient(600px 400px at 10% 20%, rgba(124,58,237,0.15), transparent 10%),
-                    radial-gradient(500px 300px at 90% 80%, rgba(124,58,237,0.12), transparent 10%),
-                    linear-gradient(180deg, rgba(11,3,38,0.6), rgba(6,0,18,0.9));
-        animation: float 12s linear infinite;
-        filter: blur(40px) saturate(1.1);
-      }
-      @keyframes float {
-        0% { transform: translateY(0) rotate(0deg); }
-        50% { transform: translateY(-12px) rotate(1deg); }
-        100% { transform: translateY(0) rotate(0deg); }
-      }
+      /* glass */
+      .glass { background: var(--glass); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.04); }
 
-      /* Glass card */
-      .glass {
-        background: var(--glass);
-        backdrop-filter: blur(8px);
-        border: 1px solid rgba(255,255,255,0.04);
+      /* hover tilt */
+      .tilt {
+        transform-style: preserve-3d;
+        transition: transform .22s cubic-bezier(.2,.9,.2,1), box-shadow .22s;
       }
+      .tilt:hover { transform: translateY(-10px) scale(1.02); box-shadow: 0 20px 40px rgba(18,6,40,0.6); }
 
-      /* Floating label */
-      .field {
-        position: relative;
-      }
-      .field input {
+      /* floating input labels */
+      .field { position: relative; }
+      .field input{
         background: transparent;
       }
-      .field label {
-        position: absolute;
-        left: 12px;
-        top: 12px;
+      .field label{
+        position: absolute; top: 12px; left: 14px;
         transform-origin: left top;
-        transition: transform .15s, font-size .15s, top .15s;
-        color: rgba(230,230,255,0.6);
+        color: rgba(230,230,255,0.68);
+        transition: transform .12s, top .12s, font-size .12s, color .12s;
         pointer-events:none;
       }
       .field input:focus + label,
       .field input:not(:placeholder-shown) + label {
         transform: translateY(-10px) scale(.85);
-        top: 6px;
-        font-size: .78rem;
-        color: var(--mp-400);
+        top: 6px; font-size:.78rem; color:var(--mp-400);
       }
 
-      .hover-tilt {
-        transition: transform .22s cubic-bezier(.2,.9,.2,1), box-shadow .22s;
-        transform-origin: center;
-      }
-      .hover-tilt:hover { transform: translateY(-10px) scale(1.02); box-shadow: 0 18px 40px rgba(20,4,40,0.5); }
+      /* reveal on scroll */
+      .reveal { opacity:0; transform: translateY(8px); transition: opacity .6s ease, transform .6s ease; }
+      .reveal.in-view { opacity:1; transform: translateY(0); }
 
-      /* entrance animations */
-      .reveal {
-        opacity: 0;
-        transform: translateY(8px);
-        transition: opacity .6s ease, transform .6s ease;
-      }
-      .reveal.in-view {
-        opacity: 1;
-        transform: translateY(0);
+      /* responsive modal */
+      .modal-backdrop { background: linear-gradient(0deg, rgba(2,0,12,0.7), rgba(2,0,12,0.5)); backdrop-filter: blur(6px); }
+
+      /* focus */
+      a:focus, button:focus, input:focus { outline: 3px solid rgba(124,58,237,0.16); outline-offset:2px; }
+
+      /* reduce motion */
+      @media (prefers-reduced-motion: reduce) {
+        .tilt { transition: none !important; }
       }
 
-      /* accessible focus */
-      button:focus, a:focus, input:focus { outline: 3px solid rgba(124,58,237,0.18); outline-offset: 2px; }
-
-      /* small toast */
-      #toast {
-        position: fixed;
-        right: 20px;
-        bottom: 20px;
-        z-index: 60;
-        display: none;
-      }
-      #toast.show { display: block; animation: toast-in .22s ease; }
-      @keyframes toast-in { from { transform: translateY(8px); opacity: 0 } to { transform: translateY(0); opacity: 1 } }
+      /* small product image placeholder */
+      .img-placeholder { background: linear-gradient(90deg, rgba(124,58,237,0.06), rgba(76,29,143,0.06)); color:var(--muted); display:flex; align-items:center; justify-content:center; }
     </style>
   </head>
 
   <body>
-    <div class="midnight-bg" aria-hidden="true"></div>
-
     <!-- Header -->
-    <header class="sticky top-0 z-40 bg-black/30 backdrop-blur-sm border-b border-transparent">
+    <header class="sticky top-0 z-40 bg-black/30 backdrop-blur-md border-b border-transparent">
       <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
         <a href="index.html" class="flex items-center gap-3">
-          <div class="w-11 h-11 rounded-xl bg-gradient-to-tr from-[#2b0b3b] to-[#7c3aed] flex items-center justify-center text-white font-extrabold">L</div>
+          <div class="w-11 h-11 rounded-xl bg-gradient-to-tr from-[var(--mp-700)] to-[var(--mp-500)] flex items-center justify-center text-white font-extrabold">L</div>
           <div>
-            <div class="text-lg font-semibold">Lustra <span class="text-xs text-slate-300 font-normal">Midnight</span></div>
-            <div class="text-xs text-slate-400 -mt-0.5">Performance Tools</div>
+            <div class="text-lg font-semibold">Lustra</div>
+            <div class="text-xs text-slate-400 -mt-0.5">Midnight Edition</div>
           </div>
         </a>
 
@@ -142,8 +107,22 @@
 
           <div id="auth-links" class="flex items-center gap-2">
             <a href="login.html" class="text-sm px-3 py-2 rounded-md hover:bg-white/5">Sign in</a>
-            <a href="signup.html" class="text-sm px-4 py-2 rounded-md bg-gradient-to-r from-[#2b0b3b] to-[#7c3aed] text-white font-semibold shadow">Get started</a>
+            <a href="signup.html" class="text-sm px-4 py-2 rounded-md bg-gradient-to-r from-[var(--mp-700)] to-[var(--mp-500)] text-white font-semibold shadow">Get started</a>
           </div>
+
+          <button id="mobile-toggle" class="md:hidden p-2 rounded-md text-slate-300 hover:bg-white/5" aria-label="Toggle menu">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- mobile nav -->
+      <div id="mobile-nav" class="md:hidden hidden border-t border-slate-800 bg-black/40">
+        <div class="px-6 py-4 flex flex-col gap-3">
+          <a href="#features" class="text-slate-300">Features</a>
+          <a href="#shop" class="text-slate-300">Shop</a>
+          <a href="#pricing" class="text-slate-300">Pricing</a>
+          <a href="#support" class="text-slate-300">Support</a>
         </div>
       </div>
     </header>
@@ -154,20 +133,20 @@
       <section class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
         <div class="space-y-6 reveal" data-reveal>
           <h1 class="text-4xl md:text-5xl font-extrabold leading-tight">
-            Sharpen your edge.
-            <span class="block bg-clip-text text-transparent bg-gradient-to-r from-[#b794f4] to-[#7c3aed]">Midnight purple UI, responsive interactions.</span>
+            Dominate with clarity.
+            <span class="block bg-clip-text text-transparent bg-gradient-to-r from-[var(--mp-400)] to-[var(--mp-500)]">Midnight purple UI, ultra-reactive interactions.</span>
           </h1>
-          <p class="text-slate-300 max-w-xl">Lustra Midnight brings a refined, reactive interface: fast interactions, smooth animations, and clear affordances. Try the hero card — move your mouse to see the parallax.</p>
+          <p class="text-slate-300 max-w-xl">Lustra provides a clean, performant interface with instant access flows and thoughtful micro-interactions designed for pro users.</p>
 
           <div class="flex flex-wrap gap-3">
-            <a href="#shop" class="inline-flex items-center gap-2 px-5 py-3 rounded-md bg-gradient-to-r from-[#2b0b3b] to-[#7c3aed] text-white font-semibold hover:scale-105 transition">Browse tools</a>
+            <a href="#shop" class="inline-flex items-center gap-2 px-5 py-3 rounded-md bg-gradient-to-r from-[var(--mp-700)] to-[var(--mp-500)] text-white font-semibold hover:scale-105 transition">Browse tools</a>
             <a href="#pricing" class="inline-flex items-center gap-2 px-4 py-3 rounded-md border border-slate-700 text-slate-200 hover:bg-white/5">See pricing</a>
             <a href="#support" class="inline-flex items-center gap-2 px-4 py-3 rounded-md border border-slate-700 text-slate-200">Support</a>
           </div>
         </div>
 
         <div class="order-first lg:order-last flex items-center justify-center">
-          <div id="hero-card" class="glass rounded-3xl p-6 w-full max-w-md hover-tilt transform perspective-3d" aria-hidden="false">
+          <div id="hero-card" class="glass rounded-3xl p-6 w-full max-w-md tilt" aria-hidden="false">
             <div class="rounded-xl overflow-hidden">
               <div class="p-6" style="background: linear-gradient(135deg, rgba(124,58,237,0.12), rgba(60,0,80,0.06))">
                 <div class="flex items-center justify-between">
@@ -199,49 +178,49 @@
         </div>
       </section>
 
-      <!-- Features (reveal) -->
+      <!-- Features -->
       <section id="features" class="mt-14">
         <h2 class="text-2xl font-bold reveal" data-reveal>Why players choose Lustra</h2>
         <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          <div class="p-6 bg-slate-800 rounded-xl hover-tilt reveal" data-reveal>
+          <div class="p-6 glass rounded-xl tilt reveal" data-reveal>
             <div class="flex items-start gap-4">
-              <div class="p-3 rounded-md bg-gradient-to-r from-[#2b0b3b] to-[#7c3aed] text-white">
+              <div class="p-3 rounded-md bg-gradient-to-r from-[var(--mp-700)] to-[var(--mp-500)] text-white">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 1.567-3 3.5S10.343 15 12 15s3-1.567 3-3.5S13.657 8 12 8zM12 3v1"/></svg>
               </div>
               <div>
                 <h4 class="font-semibold">Trusted updates</h4>
-                <p class="text-sm text-slate-400">Rapid security fixes and small releases.</p>
+                <p class="text-sm text-slate-400">Small, frequent releases with clear changelogs.</p>
               </div>
             </div>
           </div>
 
-          <div class="p-6 bg-slate-800 rounded-xl hover-tilt reveal" data-reveal>
+          <div class="p-6 glass rounded-xl tilt reveal" data-reveal>
             <div class="flex items-start gap-4">
-              <div class="p-3 rounded-md bg-gradient-to-r from-[#2b0b3b] to-[#7c3aed] text-white">
+              <div class="p-3 rounded-md bg-gradient-to-r from-[var(--mp-700)] to-[var(--mp-500)] text-white">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7h18M3 12h18M3 17h18"/></svg>
               </div>
               <div>
                 <h4 class="font-semibold">Lightweight</h4>
-                <p class="text-sm text-slate-400">Optimized for performance and compatibility.</p>
+                <p class="text-sm text-slate-400">Minimal footprint and optimized codepaths.</p>
               </div>
             </div>
           </div>
 
-          <div class="p-6 bg-slate-800 rounded-xl hover-tilt reveal" data-reveal>
+          <div class="p-6 glass rounded-xl tilt reveal" data-reveal>
             <div class="flex items-start gap-4">
-              <div class="p-3 rounded-md bg-gradient-to-r from-[#2b0b3b] to-[#7c3aed] text-white">
+              <div class="p-3 rounded-md bg-gradient-to-r from-[var(--mp-700)] to-[var(--mp-500)] text-white">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 2v4M12 18v4M4 12h4M16 12h4M5 5l3 3M16 16l3 3M5 19l3-3M16 8l3-3"/></svg>
               </div>
               <div>
                 <h4 class="font-semibold">24/7 Support</h4>
-                <p class="text-sm text-slate-400">Dedicated support and docs for every release.</p>
+                <p class="text-sm text-slate-400">Dedicated support & docs for every release.</p>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- Shop (animated cards) -->
+      <!-- Shop -->
       <section id="shop" class="mt-14">
         <div class="flex items-center justify-between">
           <h3 class="text-xl font-bold reveal" data-reveal>Featured tools</h3>
@@ -249,44 +228,44 @@
         </div>
 
         <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          <!-- Card -->
-          <article class="bg-gradient-to-b from-[#0b0326] to-[#12062b] rounded-2xl p-5 hover-tilt reveal" data-reveal>
+          <!-- product card -->
+          <article class="bg-gradient-to-b from-[var(--bg-800)] to-[var(--bg-900)] rounded-2xl p-4 tilt reveal" data-reveal tabindex="0" role="button" aria-pressed="false" data-id="valorant">
             <div class="rounded-xl overflow-hidden">
-              <div class="h-44 bg-gradient-to-tr from-[#1f0a33] to-[#3a0f4d] flex items-center justify-center text-slate-400">Image</div>
+              <div class="h-44 img-placeholder">Image</div>
               <div class="p-4">
                 <h4 class="font-semibold">Valorant Aimbot</h4>
                 <p class="text-sm text-slate-400 mt-1">Humanized smoothing & visibility checks.</p>
                 <div class="mt-4 flex items-center justify-between">
                   <div class="text-white font-bold">$35</div>
-                  <button class="px-3 py-2 rounded-md bg-gradient-to-r from-[#2b0b3b] to-[#7c3aed] text-white">Buy</button>
+                  <button class="px-3 py-2 rounded-md bg-gradient-to-r from-[var(--mp-700)] to-[var(--mp-500)] text-white btn-quick-view" data-id="valorant">Quick view</button>
                 </div>
               </div>
             </div>
           </article>
 
-          <article class="bg-gradient-to-b from-[#0b0326] to-[#12062b] rounded-2xl p-5 hover-tilt reveal" data-reveal>
+          <article class="bg-gradient-to-b from-[var(--bg-800)] to-[var(--bg-900)] rounded-2xl p-4 tilt reveal" data-reveal tabindex="0" role="button" aria-pressed="false" data-id="warzone">
             <div class="rounded-xl overflow-hidden">
-              <div class="h-44 bg-gradient-to-tr from-[#1f0a33] to-[#3a0f4d] flex items-center justify-center text-slate-400">Image</div>
+              <div class="h-44 img-placeholder">Image</div>
               <div class="p-4">
                 <h4 class="font-semibold">COD: Warzone ESP</h4>
                 <p class="text-sm text-slate-400 mt-1">Full map awareness & loot ESP.</p>
                 <div class="mt-4 flex items-center justify-between">
                   <div class="text-white font-bold">$29</div>
-                  <button class="px-3 py-2 rounded-md bg-gradient-to-r from-[#2b0b3b] to-[#7c3aed] text-white">Buy</button>
+                  <button class="px-3 py-2 rounded-md bg-gradient-to-r from-[var(--mp-700)] to-[var(--mp-500)] text-white btn-quick-view" data-id="warzone">Quick view</button>
                 </div>
               </div>
             </div>
           </article>
 
-          <article class="bg-gradient-to-b from-[#0b0326] to-[#12062b] rounded-2xl p-5 hover-tilt reveal" data-reveal>
+          <article class="bg-gradient-to-b from-[var(--bg-800)] to-[var(--bg-900)] rounded-2xl p-4 tilt reveal" data-reveal tabindex="0" role="button" aria-pressed="false" data-id="cs2">
             <div class="rounded-xl overflow-hidden">
-              <div class="h-44 bg-gradient-to-tr from-[#1f0a33] to-[#3a0f4d] flex items-center justify-center text-slate-400">Image</div>
+              <div class="h-44 img-placeholder">Image</div>
               <div class="p-4">
                 <h4 class="font-semibold">CS2 Multi-Hack</h4>
                 <p class="text-sm text-slate-400 mt-1">Bhop, Triggerbot, and Wallhack.</p>
                 <div class="mt-4 flex items-center justify-between">
                   <div class="text-white font-bold">$20</div>
-                  <button class="px-3 py-2 rounded-md bg-gradient-to-r from-[#2b0b3b] to-[#7c3aed] text-white">Buy</button>
+                  <button class="px-3 py-2 rounded-md bg-gradient-to-r from-[var(--mp-700)] to-[var(--mp-500)] text-white btn-quick-view" data-id="cs2">Quick view</button>
                 </div>
               </div>
             </div>
@@ -294,17 +273,56 @@
         </div>
       </section>
 
+      <!-- Pricing -->
+      <section id="pricing" class="mt-14">
+        <h3 class="text-xl font-bold reveal" data-reveal>Pricing</h3>
+        <div class="mt-6 grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="p-6 glass rounded-xl tilt reveal" data-reveal>
+            <div class="text-sm text-slate-300">Starter</div>
+            <div class="text-3xl font-extrabold mt-3">$9</div>
+            <div class="text-sm text-slate-400">per month</div>
+            <ul class="mt-4 text-sm text-slate-300 space-y-2">
+              <li>Basic tools</li>
+              <li>Community support</li>
+            </ul>
+            <button class="mt-6 w-full py-2 rounded-md bg-white text-black font-semibold">Get started</button>
+          </div>
+
+          <div class="p-6 rounded-xl tilt reveal" data-reveal style="background:linear-gradient(90deg,var(--mp-700),var(--mp-500)); color: white;">
+            <div class="text-sm/strong">Pro</div>
+            <div class="text-3xl font-extrabold mt-3">$29</div>
+            <div class="text-sm">per month</div>
+            <ul class="mt-4 text-sm space-y-2">
+              <li>All tools</li>
+              <li>Priority support</li>
+            </ul>
+            <button class="mt-6 w-full py-2 rounded-md bg-white/10 text-white font-semibold border border-white/20">Choose Pro</button>
+          </div>
+
+          <div class="p-6 glass rounded-xl tilt reveal" data-reveal>
+            <div class="text-sm text-slate-300">Enterprise</div>
+            <div class="text-3xl font-extrabold mt-3">$79</div>
+            <div class="text-sm text-slate-400">per month</div>
+            <ul class="mt-4 text-sm text-slate-300 space-y-2">
+              <li>Team seats</li>
+              <li>Dedicated support</li>
+            </ul>
+            <button class="mt-6 w-full py-2 rounded-md bg-white text-black font-semibold">Contact Sales</button>
+          </div>
+        </div>
+      </section>
+
       <!-- Footer -->
       <footer class="mt-16 pb-12">
-        <div class="bg-slate-900/60 rounded-xl p-8 mt-8 flex flex-col md:flex-row items-center justify-between border-t border-slate-800">
+        <div class="bg-slate-900/40 rounded-xl p-8 mt-8 flex flex-col md:flex-row items-center justify-between border-t border-slate-800">
           <div>
             <h4 class="text-lg font-bold">Stay in the loop</h4>
             <p class="text-slate-400 text-sm">Subscribe for updates and releases.</p>
           </div>
 
-          <form class="mt-4 md:mt-0 w-full md:w-1/2 flex" onsubmit="event.preventDefault(); toast('Thanks — you\\'re subscribed!')">
+          <form class="mt-4 md:mt-0 w-full md:w-1/2 flex" onsubmit="event.preventDefault(); toast('Subscribed — thanks!')">
             <input type="email" required placeholder="Your email" class="w-full rounded-l-md bg-transparent border border-slate-700 text-slate-200 px-4 py-3 focus:outline-none" />
-            <button type="submit" class="px-5 py-3 bg-gradient-to-r from-[#2b0b3b] to-[#7c3aed] text-white font-semibold rounded-r-md">Join</button>
+            <button type="submit" class="px-5 py-3 bg-gradient-to-r from-[var(--mp-700)] to-[var(--mp-500)] text-white font-semibold rounded-r-md">Join</button>
           </form>
         </div>
 
@@ -314,65 +332,112 @@
       </footer>
     </main>
 
+    <!-- Quick-view modal -->
+    <div id="modal" class="fixed inset-0 z-50 hidden items-center justify-center modal-backdrop">
+      <div class="max-w-2xl w-full p-6">
+        <div class="bg-[rgba(3,1,10,0.9)] glass rounded-xl overflow-hidden">
+          <div class="p-6 flex items-start gap-6">
+            <div class="w-40 h-28 bg-gradient-to-tr from-[var(--mp-700)] to-[var(--mp-500)] rounded-md flex items-center justify-center">Image</div>
+            <div class="flex-1">
+              <h4 id="modal-title" class="text-xl font-semibold">Product</h4>
+              <p id="modal-desc" class="text-sm text-slate-300 mt-2">Description</p>
+              <div class="mt-4 flex items-center gap-3">
+                <div id="modal-price" class="text-2xl font-extrabold">$0</div>
+                <button id="modal-buy" class="px-4 py-2 rounded-md bg-gradient-to-r from-[var(--mp-700)] to-[var(--mp-500)] text-white">Buy now</button>
+                <button id="modal-close" class="px-3 py-2 rounded-md border border-slate-700 text-slate-300">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Toast -->
-    <div id="toast" role="status" aria-live="polite">
+    <div id="toast" role="status" aria-live="polite" class="fixed right-6 bottom-6 z-50 hidden">
       <div class="bg-slate-800 text-white px-4 py-2 rounded shadow">Message</div>
     </div>
 
     <script src="auth.js"></script>
     <script>
-      // year
-      document.getElementById('year').textContent = new Date().getFullYear();
-
-      // toast helper
+      // utilities
       function toast(msg, ms = 3000) {
         const t = document.getElementById('toast');
         t.querySelector('div').textContent = msg;
-        t.classList.add('show');
-        t.style.display = 'block';
-        setTimeout(() => { t.classList.remove('show'); t.style.display = 'none'; }, ms);
+        t.classList.remove('hidden');
+        setTimeout(() => t.classList.add('hidden'), ms);
       }
+
+      document.getElementById('year').textContent = new Date().getFullYear();
+
+      // mobile toggle
+      const mobileToggle = document.getElementById('mobile-toggle');
+      const mobileNav = document.getElementById('mobile-nav');
+      mobileToggle?.addEventListener('click', () => mobileNav.classList.toggle('hidden'));
 
       // reveal on scroll
       const revealEls = document.querySelectorAll('[data-reveal]');
       const io = new IntersectionObserver((entries) => {
-        entries.forEach(e => {
-          if (e.isIntersecting) e.target.classList.add('in-view');
-        });
+        entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in-view'); });
       }, { threshold: 0.12 });
       revealEls.forEach(el => io.observe(el));
 
-      // hero card parallax
+      // hero card tilt (mouse parallax)
       const hero = document.getElementById('hero-card');
       if (hero) {
-        hero.style.transformStyle = 'preserve-3d';
         hero.addEventListener('mousemove', (ev) => {
           const r = hero.getBoundingClientRect();
-          const cx = r.left + r.width/2;
-          const cy = r.top + r.height/2;
+          const cx = r.left + r.width / 2;
+          const cy = r.top + r.height / 2;
           const dx = (ev.clientX - cx) / r.width;
           const dy = (ev.clientY - cy) / r.height;
           const rx = dy * -8;
-          const ry = dx * 12;
-          hero.style.transform = `rotateX(${rx}deg) rotateY(${ry}deg) translateZ(0)`;
+          const ry = dx * 10;
+          hero.style.transform = `rotateX(${rx}deg) rotateY(${ry}deg)`;
         });
         hero.addEventListener('mouseleave', () => hero.style.transform = '');
       }
 
-      // demo button example
-      document.getElementById('demo-btn')?.addEventListener('click', () => {
-        toast('Demo not available in this build — integrate your demo flow.');
+      // quick view modal wiring
+      const modal = document.getElementById('modal');
+      const modalTitle = document.getElementById('modal-title');
+      const modalDesc = document.getElementById('modal-desc');
+      const modalPrice = document.getElementById('modal-price');
+      document.querySelectorAll('.btn-quick-view').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const id = btn.dataset.id;
+          // demo content — replace with real product data or fetch from API
+          const data = {
+            valorant: { title: 'Valorant Aimbot', desc: 'Humanized smoothing & visible checks.', price: '$35' },
+            warzone: { title: 'COD: Warzone ESP', desc: 'Full map awareness & loot ESP.', price: '$29' },
+            cs2: { title: 'CS2 Multi-Hack', desc: 'Bhop, Triggerbot, and Wallhack.', price: '$20' },
+          }[id] || { title: 'Tool', desc: 'Details not available', price: '$0' };
+          modalTitle.textContent = data.title;
+          modalDesc.textContent = data.desc;
+          modalPrice.textContent = data.price;
+          modal.classList.remove('hidden');
+          modal.querySelector('button')?.focus();
+        });
       });
 
-      // auth toggles
-      authOnStateChanged(user => {
-        // UI is updated by auth.js toggleAuthUI already
+      document.getElementById('modal-close')?.addEventListener('click', () => { modal.classList.add('hidden'); });
+      modal?.addEventListener('click', (e) => { if (e.target === modal) modal.classList.add('hidden'); });
+
+      // demo button
+      document.getElementById('demo-btn')?.addEventListener('click', () => toast('Demo coming soon — integrate your demo flow.'));
+
+      // auth integration: update header UI on auth state changes (auth.js provides toggleAuthUI)
+      authOnStateChanged(user => { /* auth.js toggles the header automatically */ });
+
+      // logout
+      document.getElementById('logout-btn')?.addEventListener('click', () => {
+        authSignOut();
+        toast('Signed out');
       });
 
-      // mobile nav toggle
-      const mobileToggle = document.getElementById('mobile-toggle');
-      const mobileNav = document.getElementById('mobile-nav');
-      mobileToggle?.addEventListener('click', () => mobileNav.classList.toggle('hidden'));
+      // keyboard: close modal on Esc
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') modal?.classList.add('hidden');
+      });
     </script>
   </body>
 </html>
